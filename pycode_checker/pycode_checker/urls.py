@@ -16,6 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.conf.urls import url, include
+from rest_framework import routers
+from code_checker.views import GitViewSet
+
+# router = routers.DefaultRouter()
+# router.register(r'test', GitViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    url(r'^api/git/$', GitViewSet.as_view()),
+    # url(r'^api/git/(?P<pk>[0-9]+)/$', GitViewSet.as_view()),
+    url(r'^api/git/(?P<pk>[0-9a-f-]+)/$', GitViewSet.as_view()),
+# <post_id>\d+)
 ]
+
+# urlpatterns += router.urls
