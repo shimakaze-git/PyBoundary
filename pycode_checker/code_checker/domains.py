@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+import os
 import subprocess
 import mimetypes
 from pathlib import Path
@@ -6,7 +8,47 @@ from radon.cli.harvest import CCHarvester
 from radon.cli import Config
 from radon import complexity
 
-TMP_DIR = ""
+from code_checker.helper import get_repository, get_sha_for_tag, download_directory
+# from helper import get_repository, get_sha_for_tag, download_directory
+from github import Github
+
+TOKEN = os.environ.get('GITHUB_ACCESS_TOKEN', 'test')
+TMP_DIR = os.environ.get('TMP_DIR', 'tmp')
+
+
+class DownloadGithub:
+
+    github = Github(TOKEN)
+
+    def __init__(self, owner, repository, branch="master"):
+        self.owner = owner
+        self.repository = repository
+        self.branch = branch
+        self.__repo = None
+
+        self.__repo = get_repository(
+            self.owner, self.repository
+        )
+
+    def run(self):
+        self.start_download()
+
+    def start_download(self):
+        try:
+            sha = get_sha_for_tag(self.__repo, self.branch)
+
+            server_path = "./"
+            download_directory(self.__repo, sha, server_path, save_dir=TMP_DIR)
+        except Exception as e:
+            # logging
+            print(e)
+
+    def is_exist(self):
+        if self.__repo:
+            return True
+        else:
+            # logging
+            return False
 
 
 class RadonInterface(object):
@@ -162,8 +204,7 @@ class Score_Calculation(object):
 def code_check(app_directory):
     """ start process """
 
-    tmp_dir = TMP_DIR
-    path_list = Path(tmp_dir + app_directory)
+    path_list = Path(app_directory)
 
     code_score_list = []
     for file_path in list(path_list.glob("**/*.py")):
@@ -197,7 +238,7 @@ def code_check(app_directory):
     return app_score_datas
 
 
-if __name__ == '__main__':
-    directory = '/home/ubuntu/workspace/pycode_checker/'
-    app_score_datas = code_check(app_directory=directory)
-    print(app_score_datas)
+# if __name__ == '__main__':
+#     directory = '/home/ubuntu/workspace/pycode_checker/'
+#     app_score_datas = code_check(app_directory=directory)
+#     print(app_score_datas)

@@ -1,5 +1,11 @@
+import os
 import uuid
 from rest_framework import serializers
+
+from code_checker.domains import DownloadGithub
+from code_checker.logics import code_analysis
+
+TMP_DIR = os.environ.get('TMP_DIR', 'tmp')
 
 
 class GitSerializer(serializers.Serializer):
@@ -14,10 +20,14 @@ class GitSerializer(serializers.Serializer):
         self.uuid = uuid
 
     def create(self, validated_data):
-        print(validated_data)
-        # print(**validated_data)
-        print(self.uuid)
-        self.repo_list[self.uuid] = []
+        account_name = validated_data.get('account_name')
+        repository = validated_data.get('repository')
 
-        # return Snippet.objects.create(**validated_data)
+        response = None
+        download_github = DownloadGithub(account_name, repository)
+        if download_github.is_exist():
+            # logging
+            code_analysis(download_github, self.uuid, self.repo_list)
+        else:
+            self.repo_list[self.uuid] = False
         return self.repo_list

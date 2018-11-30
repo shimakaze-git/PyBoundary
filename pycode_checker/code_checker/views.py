@@ -33,8 +33,6 @@ class GitViewSet(APIView):
         # validation_check
         if serializer.is_valid():
             serializer.save()
-            # print(serializer.data)
-            # curl -X POST http://127.0.0.1:8000/api/git/ --data 'account_name=test&repository_url=test'
 
             response = {
                 'uuid': u4
