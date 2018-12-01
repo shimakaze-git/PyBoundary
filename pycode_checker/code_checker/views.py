@@ -37,6 +37,7 @@ class GitViewSet(APIView):
             response = {
                 'uuid': u4
             }
+
             return Response(
                 response,
                 status=status.HTTP_201_CREATED

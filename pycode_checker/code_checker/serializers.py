@@ -1,5 +1,6 @@
 import os
 import uuid
+import threading
 from rest_framework import serializers
 
 from code_checker.domains import DownloadGithub
@@ -25,9 +26,15 @@ class GitSerializer(serializers.Serializer):
 
         response = None
         download_github = DownloadGithub(account_name, repository)
+        print(download_github)
+        # print(download_github)
         if download_github.is_exist():
             # logging
-            code_analysis(download_github, self.uuid, self.repo_list)
+            thread_obj = threading.Thread(
+                target=code_analysis(download_github, self.uuid, self.repo_list)
+            )
+            thread_obj.start()
+            # code_analysis(download_github, self.uuid, self.repo_list)
         else:
             self.repo_list[self.uuid] = False
         return self.repo_list

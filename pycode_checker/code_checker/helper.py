@@ -13,7 +13,6 @@ import logging
 
 
 TOKEN = os.environ.get('GITHUB_ACCESS_TOKEN')
-TOKEN = '76ea3eff11ee1261f4b750ffabe44e0aeb3b6c2f'
  
 github_obj = Github(TOKEN)
 
@@ -25,6 +24,7 @@ def get_repository(owner, repository_name):
         return repo
     except (GithubException, IOError) as e:
         # logging
+        print(e)
         return None
 
 def my_makedirs(path):
@@ -72,14 +72,17 @@ def download_directory(repository, sha, server_path, save_dir=None):
             download_directory(repository, sha, content.path, save_dir)
         else:
             try:
+                # print(repository.get_languages())
+                owner = repository.owner.login
+
                 path = content.path
                 file_content = repository.get_contents(path, ref=sha)
 
-                dir_name = make_dir(repository.name + "/" + path)
+                dir_name = make_dir(owner + "/" + repository.name + "/" + path)
                 if dir_name:
                     my_makedirs(save_dir + "/" + dir_name)
 
-                save_path = save_dir + "/" + repository.name + "/" + path
+                save_path = save_dir + "/" + owner + "/" + repository.name + "/" + path
                 file_data = base64.b64decode(file_content.content).decode('utf-8')
                 with open(save_path, mode='w') as file:
                     file.write(file_data)

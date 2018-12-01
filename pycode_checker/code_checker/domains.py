@@ -24,7 +24,6 @@ class DownloadGithub:
         self.owner = owner
         self.repository = repository
         self.branch = branch
-        self.__repo = None
 
         self.__repo = get_repository(
             self.owner, self.repository
