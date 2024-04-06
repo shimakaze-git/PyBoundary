@@ -1,7 +1,7 @@
-curl -X POST http://127.0.0.1:8000/api/git/ --data 'account_name=shimakaze-git&repository=pykong'
+# Link
 
-curl http://127.0.0.1:8000/api/git/{uuid}/
+- [pycon-jp-2022-pylint](https://speakerdeck.com/atamaplus/pycon-jp-2022-atama-plus-pylint)
 
+- [pylint plugins](https://pylint.pycqa.org/en/latest/development_guide/how_tos/plugins.html)
 
-
-cp setup.sample.sh setup.sh
+- [pydeps](https://tech.mntsq.co.jp/entry/2021/03/19/120325)
